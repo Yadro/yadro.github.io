@@ -83,6 +83,7 @@ function keyListener(e) {
     console.table([
         vecToDeg(cube.rotation),
         getEuler(getMatrix(cube.quaternion, true)),
+        vecToDeg(getYawPitchRow(getMatrix(cube.quaternion))),
     ]);
     var curQuaternion = cube.quaternion;
     curQuaternion.multiplyQuaternions(quaternion, curQuaternion);
@@ -136,11 +137,11 @@ function getEuler(mat) {
     //angle_z = clamp(angle_z, 0, 360);
     return new Vector3(angle_x, angle_y, angle_z);
 }
-function getThreejsEuler(te) {
+function getThreejsEuler(m) {
     var x, y, z;
-    var m11 = te[0], m12 = te[4], m13 = te[8];
-    var m21 = te[1], m22 = te[5], m23 = te[9];
-    var m31 = te[2], m32 = te[6], m33 = te[10];
+    var m11 = m[0], m12 = m[4], m13 = m[8];
+    var m21 = m[1], m22 = m[5], m23 = m[9];
+    var m31 = m[2], m32 = m[6], m33 = m[10];
     y = Math.asin(clamp(m13, -1, 1));
     if (Math.abs(m13) < 0.99999) {
         x = Math.atan2(-m23, m33);
@@ -151,6 +152,10 @@ function getThreejsEuler(te) {
         z = 0;
     }
     return new Vector3(x, y, z);
+}
+/** @see http://planning.cs.uiuc.edu/node103.html */
+function getYawPitchRow(m) {
+    return new Vector3(Math.atan(m[7] / m[8]), Math.atan(m[6] / Math.sqrt(m[7] * m[7] + m[8] * m[8])), Math.atan(m[3] / m[0]));
 }
 function eulerToQuaternion(v) {
     var w = cos(v.x / 2) * cos(v.y / 2) * cos(v.z / 2);
@@ -198,4 +203,18 @@ function clamp(x, min, max) {
 function vecToDeg(euler) {
     return new Vector3(toDeg(euler.x), toDeg(euler.y), toDeg(euler.z));
 }
+/*
+Всем привет.
+
+Нужно получить угол наклона по одной из осей из кватерниона.
+Можно ли достать угол, который бы не зависил от других углов?
+
+Вычисления делал так: кватернион -> матрица поворота -> углы Эйлера и yaw pitch row
+
+Для наглядности сделал демо: http://yadro.github.io/projects/quaternion/
+в консоли выводятся вычисления
+1) расчеты движка threejs
+2) углы эйлера
+3) yaw pitch row
+*/ 
 //# sourceMappingURL=view.js.map
