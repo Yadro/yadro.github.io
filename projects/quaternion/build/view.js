@@ -53,7 +53,7 @@ function createLight() {
 function keyListener(e) {
     //console.log(e);
     var key = e.code.slice(3).toLowerCase();
-    var one_deg = toRad(1);
+    var one_deg = toRad(2);
     //console.log(key);
     var vec = new Vector3();
     switch (key) {
