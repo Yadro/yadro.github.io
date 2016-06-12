@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seona</title>
+    <script data-main="build/main.js" src="node_modules/requirejs/require.js"></script>
+    <style>
+
+        input[type="text"] {
+            width: 50px;
+            margin: 3px;
+        }
+        body, input, button, select {
+            font-family: monospace;
+        }
+
+        table {
+            border-left: 1px solid;
+            border-right: 1px solid;
+            margin: 5px;
+        }
+
+        table td {
+            text-align: right;
+            padding: 2px 5px;
+        }
+
+        table.simplex {
+            border: none;
+        }
+        table tr td.touch:hover {
+            background-color: #DADADA;
+        }
+        table tr td.touch {
+            cursor: pointer;
+        }
+        table tr td.select {
+            background: #DADADA;
+        }
+        table tr.select {
+            background: #DADADA;
+        }
+        table.simplex td:last-child {
+            border-left: 1px solid;
+        }
+        table.simplex td:first-child {
+            border-right: 1px solid;
+        }
+        table.simplex thead td {
+            border-bottom: 1px solid;
+        }
+        table.simplex tbody tr:last-child td {
+            border-top: 1px solid;
+        }
+    </style>
+</head>
+<body>
+<div class="react"></div>
+</body>
+</html>
