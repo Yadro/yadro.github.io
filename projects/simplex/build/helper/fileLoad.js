@@ -1,4 +1,4 @@
-define(["require", "exports", '../../node_modules/filesaver.js/filesaver'], function (require, exports, saveAs) {
+define(["require", "exports", 'filesaver'], function (require, exports, saveAs) {
     "use strict";
     function downloadFile(json) {
         var blob = new Blob([json], { type: "application/json;charset=utf-8" });
