@@ -146,6 +146,23 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
             // matrRaw[this.matrix.height - 1] = row;
             // calc last coefficient
             var res = tools_1.getLastItem(this.polynom);
+            var equationEx = new printEquation_1.PrintEquation();
+            equationEx.push
+                .word('p')
+                .equal();
+            this.left.forEach(function (leftValue, rowIdx) {
+                equationEx.push
+                    .plus()
+                    .x(leftValue)
+                    .mul()
+                    .word('_[')
+                    .x(leftValue)
+                    .word(']');
+            });
+            equationEx.push
+                .plus()
+                .fraction(tools_1.getLastItem(this.polynom));
+            this.debug.push({ equation: equationEx });
             var equation = new printEquation_1.PrintEquation();
             equation.push
                 .word('p')
@@ -271,8 +288,8 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
             var origMatrix = this.matrix.matrix;
             var matrixInst = this.matrix.clone();
             var matrix = matrixInst.matrix;
-            var ks = origMatrix[y][x];
-            console.log("element: " + ks.toFraction());
+            var opor = origMatrix[y][x];
+            console.log("element: " + opor.toFraction());
             matrixInst.log();
             this.pushLog(matrix, [y, x], 'Находим опорный элемент:');
             var buf = this.head[x];
@@ -280,13 +297,13 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
             this.left[y] = buf;
             // расчет строки y (row)
             for (var i = 0; i < matrixInst.width; i++) {
-                matrix[y][i] = origMatrix[y][i].div(ks);
+                matrix[y][i] = origMatrix[y][i].div(opor);
             }
             // расчет столбца x (col)
             for (var i = 0; i < matrixInst.height; i++) {
-                matrix[i][x] = origMatrix[i][x].div(ks.neg());
+                matrix[i][x] = origMatrix[i][x].div(opor.neg());
             }
-            matrix[y][x] = new Fraction(1).div(ks);
+            matrix[y][x] = new Fraction(1).div(opor);
             if (debugConf.debugRowCol) {
                 matrixInst.log();
                 this.pushLog(matrix, [y, x], 'Вычисляем строку и колонку:');
