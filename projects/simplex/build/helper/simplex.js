@@ -53,9 +53,13 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
             if (status === false) {
                 console.log('решение не допустимо');
             }
-            status = this.checkOptimalSolution();
-            if (status === false) {
+            var optimalSolution = this.checkOptimalSolution();
+            if (optimalSolution === false) {
                 console.log('решение не оптимально');
+            }
+            if (this.isLastStep && optimalSolution) {
+                this.showResult();
+                return true;
             }
             var pos;
             if (typeof position === 'undefined') {
@@ -78,7 +82,9 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
                 this.showResult();
                 return true;
             }
-            else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize && this.isLastStep === false) {
+            else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize
+                && this.isLastStep === false) {
+                // последний шаг
                 this.isLastStep = true;
                 var coeff = this.lastStepFindToPrintKnownCoeff();
                 this.printKnownCoeff(coeff);
@@ -146,18 +152,16 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
             // matrRaw[this.matrix.height - 1] = row;
             // calc last coefficient
             var res = tools_1.getLastItem(this.polynom);
+            // helper row
             var equationEx = new printEquation_1.PrintEquation();
             equationEx.push
                 .word('p')
                 .equal();
             this.left.forEach(function (leftValue, rowIdx) {
                 equationEx.push
-                    .plus()
-                    .x(leftValue)
+                    .plus().x(leftValue)
                     .mul()
-                    .word('_[')
-                    .x(leftValue)
-                    .word(']');
+                    .word('b[').x(leftValue).word(']');
             });
             equationEx.push
                 .plus()
@@ -220,9 +224,7 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
             for (var k in coeffs) {
                 if (coeffs.hasOwnProperty(k)) {
                     var equation = new printEquation_1.PrintEquation();
-                    equation.push.x(k);
-                    equation.push.sign(0);
-                    equation.push.arr(coeffs[k].equation);
+                    equation.push.x(k).equal().arr(coeffs[k].equation);
                     this.debug.push({ equation: equation });
                 }
             }
@@ -238,7 +240,7 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
                 var id = idx + 1;
                 equation.push.fraction(k);
                 if (idx !== len) {
-                    equation.push.sign(2).x(id).plus();
+                    equation.push.mul().x(id).plus();
                 }
             });
             return equation;
@@ -478,6 +480,7 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
         };
         /**
          * Проверка симплекс таблицы на допустимость
+         * ???
          */
         Simplex.prototype.checkValidSolution = function () {
             var matr = this.matrix;
@@ -491,15 +494,16 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
         };
         /**
          * Проверка на оптимальность
+         * решение оптимально, если все числа в последней строке больше нуля
          */
         Simplex.prototype.checkOptimalSolution = function () {
             var matr = this.matrix;
-            var row = matr.getRow(matr.height - 1);
-            return row.every(function (el, idx) {
+            var lastRow = matr.getRow(matr.height - 1);
+            return lastRow.every(function (el, idx) {
                 if (idx === matr.height - 1) {
                     return true;
                 }
-                return (el.compare(new Fraction(0)) > 0);
+                return ((el.compare(new Fraction(0))) > 0);
             });
         };
         /**
@@ -537,6 +541,7 @@ define(["require", "exports", './matrix', 'fraction', "./tools", "../components/
                 }
             }
             equation.push.word(')');
+            this.debug.push({ text: 'Ответ:' });
             this.debug.push({ equation: equation });
             var equation2 = new printEquation_1.PrintEquation();
             equation2.push

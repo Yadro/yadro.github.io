@@ -43,7 +43,7 @@ define(["require", "exports", 'react', "./printEquation"], function (require, ex
             for (var i = 0; i < head.length; i++) {
                 headArr.push(React.createElement("td", {key: i + 1}, "x" + (head[i])));
             }
-            headArr.push(React.createElement("td", {key: i + 1}, "_"));
+            headArr.push(React.createElement("td", {key: i + 1}, "b"));
             for (var i_1 = 0; i_1 < matrix.height; i_1++) {
                 var row = [];
                 // первый столбец
